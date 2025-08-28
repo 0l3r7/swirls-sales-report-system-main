@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{ flavors: '', price:'', Rprice: 0, msg: '', show: false }">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soda Float</title>
+    <link href="./src/output.css" rel="stylesheet">
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="min-h-screen bg-no-repeat bg-cover bg-center h-screen overflow-hidden" 
+      style="background-image: url('img/Flavors.png');
+      ">
+
+     <!-- Next Button -->
+        <div class="absolute right-4 pt-5">
+            <div 
+                class="w-12 h-12 bg-white flex items-center border-2 justify-center rounded-full shadow-md hover:bg-[rgba(120,255,201,1)] cursor-pointer transition"
+                @click="
+                        let orders = JSON.parse(localStorage.getItem('orders')) || [];
+                        if(orders .length>0){
+                            window.location.href = 'orders.html';
+                        }else{
+                            msg = '⚠️ Select both flavor and size!';
+                            }
+                            show = true;
+                            setTimeout(() => show = false, 2000);"
+                        >
+
+                <h1 class="text-3xl pb-[12%] font-bold">></h1>
+            </div>
+        </div>
+
+         <div class="flex h-full">
+
+            <!-- Side Panel -->
+            <aside class="col-span-1 mr-[2%] w-[250px] border-r-2  bg-white  flex flex-col items-center">
+
+                <section class="text-center mt-2">
+                    <a href="index.html"><img src="img/swirls-logo.webp" alt="logo" class="w-40 sm:w-32 md:w-20 mx-auto"></a>
+                    <h1 class="mt-2 text-xl font-bold">Soda Float</h1>
+                    <h2 class="mt-1 mb-2 text-gray-600">Flavors</h2>
+
+                     <ul class="flex flex-col gap-2">
+
+                        <template x-for="flavorSFL in ['Pepsi / Coke', 'Mountain Dew / Royal', 'Root beer / Sarsi']">
+
+                            <li 
+                            class="px-4 py-2 rounded-full hover:bg-pink-300 w-fit cursor-pointer transition" 
+                            :class="{ 'bg-pink-400 text-white': flavors === flavorSFL }"
+                            @click="flavors= flavorSFL"
+                             x-text="flavorSFL"
+                            >
+                            
+                            </li>
+                        </template>
+                     </ul>
+                    
+                </section>
+            </aside>
+            <!-- Back Button -->
+            <div class="flex items-end pb-15">
+                <a href="Menu.html">
+                    <div class="w-12 h-12 bg-white flex items-center border-2 justify-center rounded-full shadow-md hover:bg-[rgba(120,255,201,1)] cursor-pointer transition">
+                    <h1 class="text-3xl pb-[12%] font-bold">&lt;</h1>
+                    </div>
+                </a>
+            </div>
+
+
+             <!-- Sizes -->
+        <main class="flex-1 flex flex-col items-center justify-center mb-[10%] pr-14">
+            <div class="flex flex-wrap justify-center gap-6">
+                    <div 
+                    class="bg-white p-4 pl-7 pr-7 rounded-xl text-center shadow-md hover:bg-green-300 cursor-pointer transition" 
+                    :class="{'text-black border-4 border-green-300' : price === 'Php 35'}"
+                    @click="price = 'Php 35'; Rprice = 35"
+                    >
+
+                    <h3 class="text-xl">Php 35</h3>
+
+                    </div>
+            </div>
+
+            <div class=" flex flex-col gap-3 items-center justify-center  mt-[10%] pr-5">
+
+            <!-- Add Button -->
+            <button  
+                    type="button"
+                    class="w-16 h-16 mt-[10%]  bg-white flex items-center justify-center rounded-full shadow-md border-2 hover:bg-[rgba(120,255,201,1)] cursor-pointer transition text-6xl font-bold"
+                    @click="
+                    if (flavors && price){
+                        let orders = JSON.parse(localStorage.getItem('orders')) || [];
+                        orders.push({ flavorflt: flavors, price: price, Rprice: Rprice});
+                        localStorage.setItem('orders', JSON.stringify(orders));
+                        msg = `✅ Added: ${flavors} - ${price}`;
+                    } else {
+                        msg = '⚠️ Select both flavor and size!';
+                    }
+                    show = true;
+                    setTimeout(() => show = false, 2000);
+                    ">
+
+                    <span class="text-red-300 mb-3">+</span>
+
+            </button>
+
+             <!-- POPUP di ko ma alala tamang term-->
+                 <div 
+                    x-show="show" 
+                    x-transition 
+                    class=" bg-white px-4 py-2 t-20 rounded-lg shadow-lg text-center text-sm font-medium "
+                    style="display: none;"
+                >
+                    <span x-text="msg"></span>
+                </div>
+
+
+                <!--product-->
+                <div class=" flex items-end absolute right-4 bottom-4  pr-15  justify-between">
+                    <div class="w-40 sm:w-32 md:w-35 rotate-320 ">
+                                <img src="img/Soda Float.png" alt="pic">
+                    </div>
+                </div>
+                <div class=" flex items-end absolute right-1 bottom-0.5 pb-5  justify-between">
+                    <div class="w-40 sm:w-32 md:w-45 rotate-350">
+                                <img src="img/Soda Float.png" alt="pic">
+                    </div>
+                </div>
+
+
+        </main>
+
+
+        </div>
+        
+
+</body>
+</html>

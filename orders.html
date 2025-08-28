@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{ orders: [] }" x-init="orders = JSON.parse(localStorage.getItem('orders')) || []">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orders</title>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link href="./src/output.css" rel="stylesheet" />
+</head>
+<body 
+  x-data="{
+    orders: [],
+    init() {
+      const saved = JSON.parse(localStorage.getItem('orders')) || [];
+      this.orders = saved.map(item => ({
+        ...item,
+        quantity: item.quantity || 1
+      }));
+    },
+    updateStorage() {
+      localStorage.setItem('orders', JSON.stringify(this.orders));
+    },
+    get grandTotal() {
+      return this.orders.reduce((sum, item) => {
+          const basePrice = item.Rprice ? item.Rprice * item.quantity : 0;
+          const addonPrice = item.Radd ? item.Radd * item.quantity : 0;
+          return sum + basePrice + addonPrice;
+      }, 0);
+    }
+  }"
+  x-init="init()"
+  class="min-h-screen bg-no-repeat bg-cover bg-center flex flex-col items-center justify-center bg-pink-200 overflow-hidden"
+  style="background-image: url('img/settings_sales_ordererzxs.png');"
+>
+
+  <!-- Header -->
+  <header class="w-full flex items-center full max-w-2xl mb-2 mt-2 gap-3">
+    <a href="index.html"><img src="img/swirls-logo.webp" alt="logo" class="w-16"></a>
+    <h1 class="text-3xl font-bold ">Swirls</h1>
+  </header>
+
+  <!-- Orders Box -->
+  <div class="p-6 bg-white/70 rounded-2xl shadow-2xl space-y-4 text-center w-full max-w-2xl">
+    <h1 class="text-xl font-bold">Your Orders</h1>
+    
+    <!-- Orders List -->
+    <div class="max-h-[50vh] overflow-y-auto w-full px-2">
+      <template x-if="orders.length === 0">
+        <p class="text-gray-500">No orders yet.</p>
+      </template>
+      
+      <template x-for="(item, index) in orders" :key="index">
+        <div class="flex items-center justify-between bg-white px-5 mb-2 py-4 rounded-xl shadow-md">
+          <!-- Display Item Info -->
+          <div class="text-left text-gray-800 text-base leading-tight "
+            x-html="
+              // Big Cone
+              item.cone 
+                ? `<strong>Big Cone</strong> - ${item.flavorBigCone}<br><span>${item.cone}</span>`
+
+              // Sundae Cone
+              : item.flavorCone 
+                ? `<strong>Sundae Cone</strong> - ${item.flavorCone}<br><span>${item.price}</span>`
+
+              // Sundae Cup
+              : item.flavorCup 
+                ? `<strong>Sundae Cup</strong> - ${item.flavorCup}<br><span>${item.price}</span>`
+
+              // Daydream Classic
+              : item.flavor 
+                ? `<strong>Daydream Classic</strong> - ${item.flavor}<br><span>${item.size}</span><br> ${item.price}`
+
+              // Daydream Premium
+              : item.flavorddp
+                ? `<strong>Daydream Premium</strong> - ${item.flavorddp}<br><span>${item.size}</span> <br> ${item.price}`
+
+              // Vanilla Cone 
+              : item.flavorval
+                ? `<strong>Vanilla Cone</strong> - ${item.flavorval}<br><span>${item.price}</span> ${item.addon ? `<br><em>Addon: ${item.addon}</em>` : ''}`
+
+              // Swirls Delight
+              : item.flavordel
+                ? `<strong>Swirls Delight</strong> - ${item.flavordel}<br><span>${item.price}</span>`
+
+              // Soda Float
+              : item.flavorflt
+                ? `<strong>Soda Float</strong> - ${item.flavorflt}<br><span>${item.price}</span>`
+
+              // Carfait
+              : item.flavorcft
+                ? `<strong>Carfait</strong> - ${item.flavorcft}<br><span>${item.price}</span>`
+
+              // Milkshake
+              : item.flavormlk
+                ? `<strong>Milkshake</strong> - ${item.flavormlk}<br>${item.size}<br><span>${item.price}</span>`
+
+              // Iced Coffee Float
+              : item.flavoricf
+                ? `<strong>Iced Coffee Float</strong> - ${item.flavoricf}<br><span>${item.price}</span>`
+
+              // Unknown Item
+              : `<strong>Unknown Item</strong>`
+              ">
+
+              
+          </div>
+
+          <!-- Quantity Control -->
+          <div class="flex items-center bg-gray-200 rounded-md overflow-hidden">
+            <button 
+              @click="
+                if (item.quantity > 1) {
+                  item.quantity--;
+                  } else {
+                    orders.splice(index, 1); // remove item if quantity is 0
+                  }
+                  updateStorage();
+               
+              "
+              class="px-3 py-1 bg-gray-300 hover:bg-gray-400 text-lg font-bold"
+            >−</button>
+
+            <span class="px-4 py-1 bg-white text-gray-800 border-x border-gray-300">
+              <span x-text="item.quantity"></span>
+            </span>
+
+            <button 
+              @click="
+                item.quantity++;
+                updateStorage();
+              "
+              class="px-3 py-1 bg-gray-300 hover:bg-gray-400 text-lg font-bold"
+            >+</button>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <!-- Total Price -->
+      <div class="flex justify-end  pr-4 text-l font-semibol">
+        Total: ₱<span x-text="grandTotal"></span>
+      </div>
+  </div>
+  <!-- Navigation Buttons -->
+    <div class="flex justify-between w-full mt-4 space-y-4 text-center w-full max-w-2xl px-2">
+      <!-- Back Button -->
+      <a href="Menu.html">
+        <div class="w-10 h-10 bg-white flex items-center border-2 justify-center rounded-full shadow-md hover:bg-green-200 cursor-pointer transition">
+          <h1 class="text-xl font-bold">&lt;</h1>
+        </div>
+      </a>
+
+      
+
+         <!-- Clear All Orders -->
+      <button 
+        @click="orders = []; updateStorage();"
+        class="px-4 py-2 bg-red-300 text-white hover:bg-red-500 rounded-lg shadow-md text-sm flex items-center gap-1"
+      >
+        🗑️ Clear All Orders
+      </button>
+
+      <!-- Next Button -->
+      <a href="orderprice.html">
+        <div class="w-10 h-10 bg-white flex items-center border-2 justify-center rounded-full shadow-md hover:bg-green-200 cursor-pointer transition">
+          <h1 class="text-xl font-bold">&gt;</h1>
+        </div>
+      </a>
+            
+
+    </div>
+</body>
+</html>
